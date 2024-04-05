@@ -123,6 +123,68 @@
                     return 'gray';
             }
         }
+        function filterByType(type) {
+            const pokemonList = document.getElementById('pokemon-list');
+            const pokemonCards = pokemonList.querySelectorAll('.pokemon-card');
+            pokemonCards.forEach(card => {
+                if (type === 'all' || card.getAttribute('data-type') === type) {
+                    card.style.display = 'inline-block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function savePokemon(pokemon) {
+            if (savedPokemon.length >= 5) {
+                alert("Du kan bare lagre opptil 5 Pokemons. Slett noen for å lagre flere.");
+                return;
+            }
+            savedPokemon.push(pokemon);
+            updateSavedPokemonList();
+            saveToLocalStorage();
+        }
+
+        function updateSavedPokemonList() {
+            const savedPokemonList = document.getElementById('saved-pokemon-list');
+            savedPokemonList.innerHTML = "";
+            savedPokemon.forEach(pokemon => {
+                createSavedPokemonCard(pokemon, savedPokemonList);
+            });
+        }
+
+        function createSavedPokemonCard(pokemon, container) {
+            const pokemonCard = document.createElement('div');
+            pokemonCard.classList.add('pokemon-card');
+            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name); // bruker typen til lagret pokemon
+
+            const img = document.createElement('img');
+            img.src = pokemon.sprites.front_default; // bruker bildet fra API-en
+            pokemonCard.appendChild(img);
+
+            const name = document.createElement('h3');
+            name.textContent = pokemon.name;
+            pokemonCard.appendChild(name);
+
+            const type = document.createElement('p');
+            type.textContent = pokemon.types[0].type.name;
+            pokemonCard.appendChild(type);
+
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Rediger';
+            editButton.addEventListener('click', () => editPokemon(pokemon, name, type));
+            pokemonCard.appendChild(editButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Slett';
+            deleteButton.addEventListener('click', () => deletePokemon(pokemon));
+            pokemonCard.appendChild(deleteButton);
+
+            container.appendChild(pokemonCard);
+        }
+
+
+        
 
 </script>
 </body>

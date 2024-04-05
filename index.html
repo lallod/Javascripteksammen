@@ -258,3 +258,38 @@
             updateSavedPokemonList();
             saveToLocalStorage();
         }
+
+        function editPokemon(pokemon, nameElement, typeElement) {
+            const newName = prompt("Skriv inn nytt navn for Pokemon:", pokemon.name);
+            const newType = prompt("Skriv inn ny type for Pokemon:", pokemon.types[0].type.name);
+
+            pokemon.name = newName;
+            pokemon.type = newType;
+
+            nameElement.textContent = newName;
+            typeElement.textContent = newType;
+
+            saveToLocalStorage();
+        }
+
+        function createCustomPokemonCard() {
+            const name = prompt("Skriv inn navnet på den nye Pokémonen:");
+            const type = prompt("Skriv inn typen på den nye Pokémonen:");
+
+            if (name && type) {
+                const newPokemon = {
+                    name: name,
+                    types: [{type: {name: type}}],
+                    sprites: {
+                        front_default: 'ny.png' // Default bilde-URL
+                    }
+                };
+                createPokemonCard(newPokemon);
+            } else {
+                alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon.");
+            }
+        }
+
+    </script>
+</body>
+</html>

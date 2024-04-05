@@ -187,6 +187,15 @@
             localStorage.setItem('savedPokemon', JSON.stringify(savedPokemon));
         }
 
+        window.addEventListener('load', function() {
+            const savedPokemonData = localStorage.getItem('savedPokemon');
+            if (savedPokemonData) {
+                savedPokemon = JSON.parse(savedPokemonData);
+                updateSavedPokemonList();
+            }
+        });
+
+
 
 
 

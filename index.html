@@ -183,8 +183,12 @@
             container.appendChild(pokemonCard);
         }
 
+        function saveToLocalStorage() {
+            localStorage.setItem('savedPokemon', JSON.stringify(savedPokemon));
+        }
 
-        
+
+
 
 </script>
 </body>

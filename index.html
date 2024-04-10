@@ -5,11 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon Application</title>
     <style>
+        img[src="ny.png"] {
+            width: 30px;
+            height: auto; /* Dette vil opprettholde proporsjonene */
+        }
 
-	img[src="ny.png"] {
-    width: 30px;
-    height: auto; /* Dette vil opprettholde proporsjonene */
-}
+        .font-family {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .pokemon-section {
+            margin-bottom: 30px;
+        }
+
+        .pokemon-section h2 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #ffa500;
+        }
+
+        .type-filter {
+            margin-top: 20px;
+        }
+
+        .type-filter button {
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
 
         .pokemon-card {
             border: 1px solid #ccc;
@@ -19,51 +76,77 @@
             display: inline-block;
         }
 
-        .type-filter {
-            margin-top: 20px;
+        .pokemon-card img {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px;
         }
 
-        .type-filter button {
-            margin-right: 10px;
+        .pokemon-card h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
         }
+
+        .pokemon-card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        .pokemon-card button {
+            display: block;
+            margin: 10px auto 0;
+            padding: 8px 16px;
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .pokemon-card button:hover {
+            background-color: #d63200;
+        }
+
     </style>
 </head>
-<body>
-    <h1>Pokémon Application</h1>
+<body class="font-family">
     <div class="type-filter">
-        <button onclick="filterByType('all')">Alle</button>
-        <button onclick="filterByType('water')">Vann</button>
-        <button onclick="filterByType('fire')">Ild</button>
-        <button onclick="filterByType('grass')">Gress</button>
-        <button onclick="filterByType('electric')">Elektrisk</button>
-        <button onclick="filterByType('ice')">Is</button>
-        <button onclick="filterByType('ground')">Jord</button>
-        <button onclick="filterByType('rock')">Stein</button>
-        <button onclick="filterByType('bug')">Insekt</button>
-        <button onclick="filterByType('normal')">Normal</button>
-        <button onclick="filterByType('flying')">Flygende</button>
-        <button onclick="filterByType('poison')">Gift</button>
-        <button onclick="filterByType('psychic')">Psykick</button>
-        <button onclick="filterByType('fighting')">Kamp</button>
-        <button onclick="filterByType('ghost')">Spøkelse</button>
-        <button onclick="filterByType('dark')">Mørke</button>
-        <button onclick="filterByType('steel')">Stål</button>
-        <button onclick="filterByType('fairy')">Fe</button>
+        <button onclick="filterByType('all')" data-type="all">Alle</button>
+        <button onclick="filterByType('water')" data-type="water">Vann</button>
+        <button onclick="filterByType('fire')" data-type="fire">Ild</button>
+        <button onclick="filterByType('grass')" data-type="grass">Gress</button>
+        <button onclick="filterByType('electric')" data-type="electric">Elektrisk</button>
+        <button onclick="filterByType('ice')" data-type="ice">Is</button>
+        <button onclick="filterByType('ground')" data-type="ground">Jord</button>
+        <button onclick="filterByType('rock')" data-type="rock">Stein</button>
+        <button onclick="filterByType('bug')" data-type="bug">Insekt</button>
+        <button onclick="filterByType('normal')" data-type="normal">Normal</button>
+        <button onclick="filterByType('flying')" data-type="flying">Flygende</button>
+        <button onclick="filterByType('poison')" data-type="poison">Gift</button>
+        <button onclick="filterByType('psychic')" data-type="psychic">Psykick</button>
+        <button onclick="filterByType('fighting')" data-type="fighting">Kamp</button>
+        <button onclick="filterByType('ghost')" data-type="ghost">Spøkelse</button>
+        <button onclick="filterByType('dark')" data-type="dark">Mørke</button>
+        <button onclick="filterByType('steel')" data-type="steel">Stål</button>
+        <button onclick="filterByType('fairy')" data-type="fairy">Fe</button>
     </div>
-    <div id="pokemon-list">
+    <h1>Lag Ny Pokémon</h1>
+    <button onclick="createCustomPokemonCard()">Lag Ny Pokémon</button>
+    <div class="container" id="pokemon-list">
         <!-- Pokémon vises her -->
     </div>
-    <button onclick="createCustomPokemonCard()">Lag Ny Pokémon</button>
 
     <h1>Lageret Pokémon</h1>
-
-
-    <div id="saved-pokemon-list">
-
+    <div class="container" id="saved-pokemon-list">
         <!-- Lagrede Pokémon vises her -->
-
     </div>
-
 
     <script>
         let savedPokemon = [];
@@ -112,7 +195,7 @@
             pokemonCard.appendChild(saveButton);
 
             const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Slett';
+            deleteButton.textContent = 'Slett fra Lageret Pokémons';
             deleteButton.addEventListener('click', () => deletePokemon(pokemon));
             pokemonCard.appendChild(deleteButton);
 
@@ -122,6 +205,25 @@
             pokemonCard.appendChild(editButton);
 
             pokemonList.appendChild(pokemonCard);
+        }
+
+        function createCustomPokemonCard() {
+            const name = prompt("Skriv inn navnet på den nye Pokémonen:");
+            const type = prompt("Skriv inn typen på den nye Pokémonen:");
+
+            if (name && type) {
+                const newPokemon = {
+                    name: name,
+                    types: [{type: {name: type}}],
+                    sprites: {
+                        front_default: 'ny.png'
+                    }
+                };
+                createPokemonCard(newPokemon);
+                savePokemonLocally(newPokemon); // Kall savePokemonLocally med det nye Pokemon-objektet
+            } else {
+                alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon.");
+            }
         }
 
         function getColorByType(type) {
@@ -177,6 +279,19 @@
             });
         }
 
+        function setButtonColors() {
+            const typeFilterButtons = document.querySelectorAll('.type-filter button');
+
+            typeFilterButtons.forEach((button, index) => {
+                const type = button.getAttribute('data-type');
+                const color = getColorByType(type);
+                button.style.backgroundColor = color;
+            });
+        }
+
+        // Kall funksjonen for å sette fargene når siden lastes
+        document.addEventListener("DOMContentLoaded", setButtonColors);
+
         function savePokemon(pokemon) {
             if (savedPokemon.length >= 5) {
                 alert("Du kan bare lagre opptil 5 Pokemons. Slett noen for å lagre flere.");
@@ -198,10 +313,10 @@
         function createSavedPokemonCard(pokemon, container) {
             const pokemonCard = document.createElement('div');
             pokemonCard.classList.add('pokemon-card');
-            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name); // bruker typen til lagret pokemon
+            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name);
 
             const img = document.createElement('img');
-            img.src = pokemon.sprites.front_default; // bruker bildet fra API-en
+            img.src = pokemon.sprites.front_default;
             pokemonCard.appendChild(img);
 
             const name = document.createElement('h3');
@@ -246,15 +361,11 @@
                 card.querySelector('p').textContent === pokemon.types[0].type.name
             );
 
-            // Fjern Pokémon-kortet fra savedPokemonList-diven
             if (pokemonCardToRemove) {
                 savedPokemonList.removeChild(pokemonCardToRemove);
             }
 
-            // Fjern Pokémon fra savedPokemon-arrayet
             savedPokemon = savedPokemon.filter(saved => saved !== pokemon);
-
-            // Oppdater visningen og lagringen
             updateSavedPokemonList();
             saveToLocalStorage();
         }
@@ -264,7 +375,7 @@
             const newType = prompt("Skriv inn ny type for Pokemon:", pokemon.types[0].type.name);
 
             pokemon.name = newName;
-            pokemon.type = newType;
+            pokemon.types[0].type.name = newType;
 
             nameElement.textContent = newName;
             typeElement.textContent = newType;
@@ -272,24 +383,16 @@
             saveToLocalStorage();
         }
 
-        function createCustomPokemonCard() {
-            const name = prompt("Skriv inn navnet på den nye Pokémonen:");
-            const type = prompt("Skriv inn typen på den nye Pokémonen:");
-
-            if (name && type) {
-                const newPokemon = {
-                    name: name,
-                    types: [{type: {name: type}}],
-                    sprites: {
-                        front_default: 'ny.png' // Default bilde-URL
-                    }
-                };
-                createPokemonCard(newPokemon);
-            } else {
-                alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon.");
+        // Function to load all Pokemon from local storage when the page is loaded
+        function loadAllPokemonFromLocalStorage() {
+            const allPokemonData = localStorage.getItem('allPokemon');
+            if (allPokemonData) {
+                allPokemon = JSON.parse(allPokemonData);
             }
         }
 
+        // Call the function to load all Pokemon from local storage when the DOM content is loaded
+        document.addEventListener("DOMContentLoaded", loadAllPokemonFromLocalStorage);
     </script>
 </body>
 </html>

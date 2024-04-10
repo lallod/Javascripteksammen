@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Game</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        button {
+            margin-top: 20px;
+        }
+
+        .group {
+            display: inline-block;
+            margin: 20px;
+        }
+
+        .group-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pokemon-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .pokemon-list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .pokemon-list-item img {
+            margin-right: 10px;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Battle Game</h1>
+        <div id="pokemon-groups"></div>
+        <button onclick="startNewGame()">Start nytt spill</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        const apiUrl = 'https://pokeapi.co/api/v2/';
+
+        // Starter et nytt spill når knappen "Start nytt spill" trykkes
+        async function startNewGame() {
+            // Genererer to tilfeldige grupper av Pokémon
+            const pokemonGroup1 = await generateRandomPokemonGroup();
+            const pokemonGroup2 = await generateRandomPokemonGroup();
+
+            // Viser de to gruppene på nettsiden
+            displayGroups([{ name: 'Gruppe 1', pokemon: pokemonGroup1 }, { name: 'Gruppe 2', pokemon: pokemonGroup2 }]);
+
+            // Simulerer kampen mellom gruppene og viser resultatet
+            const result = battle(pokemonGroup1, pokemonGroup2);
+            displayResult(result);
+        }
+
+        // Genererer en tilfeldig gruppe av tre Pokémon
+        async function generateRandomPokemonGroup() {
+            const pokemonGroup = [];
+            for (let i = 0; i < 3; i++) {
+                // Velger tilfeldig en Pokémon ved å hente data fra PokeAPI
+                const randomPokemonId = Math.floor(Math.random() * 898) + 1;
+                const response = await fetch(`${apiUrl}pokemon/${randomPokemonId}`);
+                const data = await response.json();
+                // Legger til Pokémon i gruppen med navn, HP og bilde
+                pokemonGroup.push({
+                    name: data.name,
+                    hp: data.stats[0].base_stat,
+                    imageUrl: data.sprites.front_default
+                });
+            }
+            return pokemonGroup;
+        }
+
+        // Viser gruppene på nettsiden med navn og Pokémon-profiler
+        function displayGroups(groups) {
+            const groupsContainer = document.getElementById('pokemon-groups');
+            groupsContainer.innerHTML = '';
+            groups.forEach(group => {
+                const groupDiv = document.createElement('div');
+                groupDiv.classList.add('group');
+
+                const groupName = document.createElement('div');
+                groupName.classList.add('group-name');
+                groupName.textContent = group.name;
+                groupDiv.appendChild(groupName);
+
+                const pokemonList = document.createElement('ul');
+                pokemonList.classList.add('pokemon-list');
+                group.pokemon.forEach(pokemon => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('pokemon-list-item');
+                    const img = document.createElement('img');
+                    img.src = pokemon.imageUrl;
+                    img.alt = pokemon.name;
+                    const pTag = document.createElement('p');
+                    pTag.textContent = `${pokemon.name} (HP: ${pokemon.hp})`;
+                    listItem.appendChild(img);
+                    listItem.appendChild(pTag);
+                    pokemonList.appendChild(listItem);
+                });
+                groupDiv.appendChild(pokemonList);
+
+                groupsContainer.appendChild(groupDiv);
+            });
+        }
+
+        // Simulerer kampen mellom to grupper av Pokémon
+        function battle(group1, group2) {
+            // Beregner total HP for hver gruppe
+            let group1HP = group1.reduce((total, pokemon) => total + pokemon.hp, 0);
+            let group2HP = group2.reduce((total, pokemon) => total + pokemon.hp, 0);
+
+            // Simulerer tre runder med angrep
+            for (let i = 0; i < 3; i++) {
+                group1HP -= Math.floor(Math.random() * 20) + 10;
+                group2HP -= Math.floor(Math.random() * 20) + 10;
+            }
+
+            // Avgjør vinneren basert på gjenværende HP
+            if (group1HP > group2HP) {
+                return { winner: 'Gruppe 1', hp1: group1HP, hp2: group2HP };
+            } else if (group2HP > group1HP) {
+                return { winner: 'Gruppe 2', hp1: group1HP, hp2: group2HP };
+            } else {
+                return { winner: 'Uavgjort', hp1: group1HP, hp2: group2HP };
+            }
+        }
+
+        // Viser resultatet av kampen på nettsiden
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<h2>${result.winner} vant spillet!</h2>
+                                    <p>HP for Gruppe 1: ${result.hp1}</p>
+                                    <p>HP for Gruppe 2: ${result.hp2}</p>`;
+        }
+    </script>
+</body>
+</html>
 

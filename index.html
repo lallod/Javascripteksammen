@@ -149,83 +149,87 @@
     </div>
 
     <script>
-        let savedPokemon = [];
-        let allPokemon = [];
+        let savedPokemon = []; // Liste over lagrede pokémon
+        let allPokemon = []; // Liste over alle pokémon fra API-en
 
+        // Når dokumentet er ferdig lastet, hentes dataen fra PokéAPI-en
         document.addEventListener("DOMContentLoaded", function() {
             fetch('https://pokeapi.co/api/v2/pokemon?limit=50')
                 .then(response => response.json())
                 .then(data => {
-                    allPokemon = data.results;
+                    allPokemon = data.results; // Lagrer resultatene fra PokéAPI-en
                     data.results.forEach(result => {
                         fetch(result.url)
                             .then(response => response.json())
                             .then(pokemon => {
-                                createPokemonCard(pokemon);
+                                createPokemonCard(pokemon); // Opprett et kort for hver pokémon
                             })
-                            .catch(error => console.error('Feil ved henting av Pokemon:', error));
+                            .catch(error => console.error('Feil ved henting av Pokemon:', error)); // Håndter feil ved henting av pokémon
                     });
                 })
-                .catch(error => console.error('Feil ved henting av Pokemon-liste:', error));
+                .catch(error => console.error('Feil ved henting av Pokemon-liste:', error)); // Håndter feil ved henting av pokémon-listen
         });
 
+        // Opprett et kort for en gitt pokémon
         function createPokemonCard(pokemon) {
-            const pokemonList = document.getElementById('pokemon-list');
+            const pokemonList = document.getElementById('pokemon-list'); // Finn elementet for pokémon-listen
 
-            const pokemonCard = document.createElement('div');
-            pokemonCard.classList.add('pokemon-card');
-            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name);
-            pokemonCard.setAttribute('data-type', pokemon.types[0].type.name);
+            const pokemonCard = document.createElement('div'); // Opprett et nytt div-element for kortet
+            pokemonCard.classList.add('pokemon-card'); // Legg til CSS-klassen for pokémon-kort
+            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name); // Angi bakgrunnsfarge basert på pokémon-typen
+            pokemonCard.setAttribute('data-type', pokemon.types[0].type.name); // Sett data-attributtet for typen på kortet
 
-            const img = document.createElement('img');
-            img.src = pokemon.sprites.front_default;
-            pokemonCard.appendChild(img);
+            const img = document.createElement('img'); // Opprett et bildeelement
+            img.src = pokemon.sprites.front_default; // Angi bildekilden til standard sprite for pokémonen
+            pokemonCard.appendChild(img); // Legg til bildet i kortet
 
-            const name = document.createElement('h3');
-            name.textContent = pokemon.name;
-            pokemonCard.appendChild(name);
+            const name = document.createElement('h3'); // Opprett et overskriftselement for navnet
+            name.textContent = pokemon.name; // Angi navnet på pokémonen
+            pokemonCard.appendChild(name); // Legg til navnet i kortet
 
-            const type = document.createElement('p');
-            type.textContent = pokemon.types[0].type.name;
-            pokemonCard.appendChild(type);
+            const type = document.createElement('p'); // Opprett et avsnittselement for typen
+            type.textContent = pokemon.types[0].type.name; // Angi typen på pokémonen
+            pokemonCard.appendChild(type); // Legg til typen i kortet
 
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Lagre';
-            saveButton.addEventListener('click', () => savePokemon(pokemon));
-            pokemonCard.appendChild(saveButton);
+            const saveButton = document.createElement('button'); // Opprett en knapp for å lagre pokémonen
+            saveButton.textContent = 'Lagre til Lageret Pokémon'; // Angi teksten til knappen
+            saveButton.addEventListener('click', () => savePokemon(pokemon)); // Legg til en hendelse for å lagre pokémonen ved klikk
+            pokemonCard.appendChild(saveButton); // Legg til knappen i kortet
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Slett fra Lageret Pokémons';
-            deleteButton.addEventListener('click', () => deletePokemon(pokemon));
-            pokemonCard.appendChild(deleteButton);
+            const deleteButton = document.createElement('button'); // Opprett en knapp for å slette pokémonen
+            deleteButton.textContent = 'Slett fra Lageret Pokémons'; // Angi teksten til knappen
+            deleteButton.addEventListener('click', () => deletePokemon(pokemon)); // Legg til en hendelse for å slette pokémonen ved klikk
+            pokemonCard.appendChild(deleteButton); // Legg til knappen i kortet
 
-            const editButton = document.createElement('button');
-            editButton.textContent = 'Rediger';
-            editButton.addEventListener('click', () => editPokemon(pokemon, name, type));
-            pokemonCard.appendChild(editButton);
+            const editButton = document.createElement('button'); // Opprett en knapp for å redigere pokémonen
+            editButton.textContent = 'Rediger'; // Angi teksten til knappen
+            editButton.addEventListener('click', () => editPokemon(pokemon, name, type)); // Legg til en hendelse for å redigere pokémonen ved klikk
+            pokemonCard.appendChild(editButton); // Legg til knappen i kortet
 
-            pokemonList.appendChild(pokemonCard);
+            pokemonList.appendChild(pokemonCard); // Legg til kortet i pokémon-listen
         }
 
+        // Opprett et tilpasset pokémonkort basert på brukerens inndata
         function createCustomPokemonCard() {
-            const name = prompt("Skriv inn navnet på den nye Pokémonen:");
-            const type = prompt("Skriv inn typen på den nye Pokémonen:");
+            const name = prompt("Skriv inn navnet på den nye Pokémonen:"); // Spør brukeren om navnet på den nye pokémonen
+            const type = prompt("Skriv inn typen på den nye Pokémonen:"); // Spør brukeren om typen til den nye pokémonen
 
-            if (name && type) {
-                const newPokemon = {
+            if (name && type) { // Sjekk om både navn og type er fylt ut
+                const newPokemon = { // Opprett et nytt pokémonobjekt basert på inndataene
                     name: name,
                     types: [{type: {name: type}}],
                     sprites: {
                         front_default: 'ny.png'
                     }
                 };
-                createPokemonCard(newPokemon);
-                savePokemonLocally(newPokemon); // Kall savePokemonLocally med det nye Pokemon-objektet
+                createPokemonCard(newPokemon); // Opprett et kort for den nye pokémonen
+                savePokemonLocally(newPokemon); // Lagre den nye pokémonen lokalt
             } else {
-                alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon.");
+                alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon."); // Gi en melding hvis ikke både navn og type er fylt ut
             }
         }
 
+        // Hent fargen basert på typen til pokémonen
         function getColorByType(type) {
             switch (type) {
                 case 'water':
@@ -267,132 +271,146 @@
             }
         }
 
+        // Filtrer pokémonkortene basert på typen
         function filterByType(type) {
-            const pokemonList = document.getElementById('pokemon-list');
-            const pokemonCards = pokemonList.querySelectorAll('.pokemon-card');
+            const pokemonList = document.getElementById('pokemon-list'); // Finn pokémon-listen
+            const pokemonCards = pokemonList.querySelectorAll('.pokemon-card'); // Finn alle pokémon-kortene
+
+            // Gå gjennom hvert pokémon-kort og sett visningen basert på typen
             pokemonCards.forEach(card => {
                 if (type === 'all' || card.getAttribute('data-type') === type) {
-                    card.style.display = 'inline-block';
+                    card.style.display = 'inline-block'; // Vis kortet
                 } else {
-                    card.style.display = 'none';
+                    card.style.display = 'none'; // Skjul kortet
                 }
             });
         }
 
+        // Sett fargene på knappene basert på typen når siden lastes
         function setButtonColors() {
-            const typeFilterButtons = document.querySelectorAll('.type-filter button');
+            const typeFilterButtons = document.querySelectorAll('.type-filter button'); // Finn alle knappene for typen
 
+            // Gå gjennom hver knapp og sett fargen basert på typen
             typeFilterButtons.forEach((button, index) => {
-                const type = button.getAttribute('data-type');
-                const color = getColorByType(type);
-                button.style.backgroundColor = color;
+                const type = button.getAttribute('data-type'); // Hent typen fra data-attributtet
+                const color = getColorByType(type); // Hent fargen basert på typen
+                button.style.backgroundColor = color; // Angi fargen til knappen
             });
         }
 
         // Kall funksjonen for å sette fargene når siden lastes
         document.addEventListener("DOMContentLoaded", setButtonColors);
 
+        // Lagre pokémonen lokalt
         function savePokemon(pokemon) {
-            if (savedPokemon.length >= 5) {
-                alert("Du kan bare lagre opptil 5 Pokemons. Slett noen for å lagre flere.");
+            if (savedPokemon.length >= 5) { // Sjekk om det allerede er lagret 5 pokémoner
+                alert("Du kan bare lagre opptil 5 Pokemons. Slett noen for å lagre flere."); // Gi en melding om grensen er nådd
                 return;
             }
-            savedPokemon.push(pokemon);
-            updateSavedPokemonList();
-            saveToLocalStorage();
+            savedPokemon.push(pokemon); // Legg til pokémonen i listen over lagrede pokémoner
+            updateSavedPokemonList(); // Oppdater listen over lagrede pokémoner
+            saveToLocalStorage(); // Lagre pokémonene til lokal lagring
         }
 
+        // Oppdater listen over lagrede pokémoner
         function updateSavedPokemonList() {
-            const savedPokemonList = document.getElementById('saved-pokemon-list');
-            savedPokemonList.innerHTML = "";
+            const savedPokemonList = document.getElementById('saved-pokemon-list'); // Finn elementet for listen over lagrede pokémoner
+            savedPokemonList.innerHTML = ""; // Tøm listen
+
+            // Gå gjennom hver lagrede pokémon og opprett et kort for den
             savedPokemon.forEach(pokemon => {
                 createSavedPokemonCard(pokemon, savedPokemonList);
             });
         }
 
+        // Opprett et kort for en lagret pokémon
         function createSavedPokemonCard(pokemon, container) {
-            const pokemonCard = document.createElement('div');
-            pokemonCard.classList.add('pokemon-card');
-            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name);
+            const pokemonCard = document.createElement('div'); // Opprett et nytt div-element for kortet
+            pokemonCard.classList.add('pokemon-card'); // Legg til CSS-klassen for pokémon-kort
+            pokemonCard.style.backgroundColor = getColorByType(pokemon.types[0].type.name); // Angi bakgrunnsfarge basert på typen til pokémonen
 
-            const img = document.createElement('img');
-            img.src = pokemon.sprites.front_default;
-            pokemonCard.appendChild(img);
+            const img = document.createElement('img'); // Opprett et bildeelement
+            img.src = pokemon.sprites.front_default; // Angi bildekilden til standard sprite for pokémonen
+            pokemonCard.appendChild(img); // Legg til bildet i kortet
 
-            const name = document.createElement('h3');
-            name.textContent = pokemon.name;
-            pokemonCard.appendChild(name);
+            const name = document.createElement('h3'); // Opprett et overskriftselement for navnet
+            name.textContent = pokemon.name; // Angi navnet på pokémonen
+            pokemonCard.appendChild(name); // Legg til navnet i kortet
 
-            const type = document.createElement('p');
-            type.textContent = pokemon.types[0].type.name;
-            pokemonCard.appendChild(type);
+            const type = document.createElement('p'); // Opprett et avsnittselement for typen
+            type.textContent = pokemon.types[0].type.name; // Angi typen på pokémonen
+            pokemonCard.appendChild(type); // Legg til typen i kortet
 
-            const editButton = document.createElement('button');
-            editButton.textContent = 'Rediger';
-            editButton.addEventListener('click', () => editPokemon(pokemon, name, type));
-            pokemonCard.appendChild(editButton);
+            const editButton = document.createElement('button'); // Opprett en knapp for å redigere pokémonen
+            editButton.textContent = 'Rediger'; // Angi teksten til knappen
+            editButton.addEventListener('click', () => editPokemon(pokemon, name, type)); // Legg til en hendelse for å redigere pokémonen ved klikk
+            pokemonCard.appendChild(editButton); // Legg til knappen i kortet
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Slett';
-            deleteButton.addEventListener('click', () => deletePokemon(pokemon));
-            pokemonCard.appendChild(deleteButton);
+            const deleteButton = document.createElement('button'); // Opprett en knapp for å slette pokémonen
+            deleteButton.textContent = 'Slett'; // Angi teksten til knappen
+            deleteButton.addEventListener('click', () => deletePokemon(pokemon)); // Legg til en hendelse for å slette pokémonen ved klikk
+            pokemonCard.appendChild(deleteButton); // Legg til knappen i kortet
 
-            container.appendChild(pokemonCard);
+            container.appendChild(pokemonCard); // Legg til kortet i den gitte beholderen
         }
 
+        // Lagre pokémonene til lokal lagring
         function saveToLocalStorage() {
-            localStorage.setItem('savedPokemon', JSON.stringify(savedPokemon));
+            localStorage.setItem('savedPokemon', JSON.stringify(savedPokemon)); // Lagre pokémonene i lokal lagring som JSON-streng
         }
 
+        // Last inn alle lagrede pokémon fra lokal lagring når siden lastes
         window.addEventListener('load', function() {
-            const savedPokemonData = localStorage.getItem('savedPokemon');
-            if (savedPokemonData) {
-                savedPokemon = JSON.parse(savedPokemonData);
-                updateSavedPokemonList();
+            const savedPokemonData = localStorage.getItem('savedPokemon'); // Hent dataene for lagrede pokémon fra lokal lagring
+            if (savedPokemonData) { // Sjekk om det er lagrede pokémon-data tilgjengelig
+                savedPokemon = JSON.parse(savedPokemonData); // Konverter JSON-strengen til et JavaScript-objekt
+                updateSavedPokemonList(); // Oppdater listen over lagrede pokémoner
             }
         });
 
+        // Slett en lagret pokémon
         function deletePokemon(pokemon) {
-            const savedPokemonList = document.getElementById('saved-pokemon-list');
-            const pokemonCards = savedPokemonList.querySelectorAll('.pokemon-card');
-            
+            const savedPokemonList = document.getElementById('saved-pokemon-list'); // Finn elementet for listen over lagrede pokémoner
+            const pokemonCards = savedPokemonList.querySelectorAll('.pokemon-card'); // Finn alle kortene for lagrede pokémoner
+
+            // Finn kortet som tilsvarer den valgte pokémonen
             const pokemonCardToRemove = Array.from(pokemonCards).find(card =>
                 card.querySelector('h3').textContent === pokemon.name &&
                 card.querySelector('p').textContent === pokemon.types[0].type.name
             );
 
-            if (pokemonCardToRemove) {
-                savedPokemonList.removeChild(pokemonCardToRemove);
+            if (pokemonCardToRemove) { // Sjekk om kortet ble funnet
+                savedPokemonList.removeChild(pokemonCardToRemove); // Fjern kortet fra listen over lagrede pokémoner
             }
 
-            savedPokemon = savedPokemon.filter(saved => saved !== pokemon);
-            updateSavedPokemonList();
-            saveToLocalStorage();
+            savedPokemon = savedPokemon.filter(saved => saved !== pokemon); // Filtrer ut den valgte pokémonen fra listen over lagrede pokémoner
+            updateSavedPokemonList(); // Oppdater listen over lagrede pokémoner
+            saveToLocalStorage(); // Lagre endringene til lokal lagring
         }
 
+        // Rediger en lagret pokémon
         function editPokemon(pokemon, nameElement, typeElement) {
-            const newName = prompt("Skriv inn nytt navn for Pokemon:", pokemon.name);
-            const newType = prompt("Skriv inn ny type for Pokemon:", pokemon.types[0].type.name);
+            const newName = prompt("Skriv inn nytt navn for Pokemon:", pokemon.name); // Spør brukeren om et nytt navn for pokémonen
+            const newType = prompt("Skriv inn ny type for Pokemon:", pokemon.types[0].type.name); // Spør brukeren om en ny type for pokémonen
 
-            pokemon.name = newName;
-            pokemon.types[0].type.name = newType;
+            pokemon.name = newName; // Oppdater navnet til pokémonen
+            pokemon.types[0].type.name = newType; // Oppdater typen til pokémonen
 
-            nameElement.textContent = newName;
-            typeElement.textContent = newType;
+            nameElement.textContent = newName; // Oppdater navnet som vises i kortet
+            typeElement.textContent = newType; // Oppdater typen som vises i kortet
 
-            saveToLocalStorage();
+            saveToLocalStorage(); // Lagre endringene til lokal lagring
         }
 
-        // Function to load all Pokemon from local storage when the page is loaded
+        // Last inn alle pokémon fra lokal lagring når siden lastes
         function loadAllPokemonFromLocalStorage() {
-            const allPokemonData = localStorage.getItem('allPokemon');
-            if (allPokemonData) {
-                allPokemon = JSON.parse(allPokemonData);
+            const allPokemonData = localStorage.getItem('allPokemon'); // Hent dataene for alle pokémon fra lokal lagring
+            if (allPokemonData) { // Sjekk om det er data tilgjengelig
+                allPokemon = JSON.parse(allPokemonData); // Konverter JSON-strengen til et JavaScript-objekt
             }
         }
 
-        // Call the function to load all Pokemon from local storage when the DOM content is loaded
-        document.addEventListener("DOMContentLoaded", loadAllPokemonFromLocalStorage);
+        document.addEventListener("DOMContentLoaded", loadAllPokemonFromLocalStorage); // Kall funksjonen når siden lastes
     </script>
 </body>
 </html>

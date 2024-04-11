@@ -210,24 +210,26 @@
         }
 
         // Opprett et tilpasset pokémonkort basert på brukerens inndata
-        function createCustomPokemonCard() {
-            const name = prompt("Skriv inn navnet på den nye Pokémonen:"); // Spør brukeren om navnet på den nye pokémonen
-            const type = prompt("Skriv inn typen på den nye Pokémonen:"); // Spør brukeren om typen til den nye pokémonen
+       // Endre kallet i createCustomPokemonCard() til savePokemon() i stedet for savePokemonLocally()
+function createCustomPokemonCard() {
+    const name = prompt("Skriv inn navnet på den nye Pokémonen:");
+    const type = prompt("Skriv inn typen på den nye Pokémonen:");
 
-            if (name && type) { // Sjekk om både navn og type er fylt ut
-                const newPokemon = { // Opprett et nytt pokémonobjekt basert på inndataene
-                    name: name,
-                    types: [{type: {name: type}}],
-                    sprites: {
-                        front_default: 'ny.png'
-                    }
-                };
-                createPokemonCard(newPokemon); // Opprett et kort for den nye pokémonen
-                savePokemonLocally(newPokemon); // Lagre den nye pokémonen lokalt
-            } else {
-                alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon."); // Gi en melding hvis ikke både navn og type er fylt ut
+    if (name && type) {
+        const newPokemon = {
+            name: name,
+            types: [{ type: { name: type } }],
+            sprites: {
+                front_default: 'ny.png'
             }
-        }
+        };
+        createPokemonCard(newPokemon);
+        savePokemon(newPokemon); // Endret kallet her
+    } else {
+        alert("Vennligst fyll ut navn og type for å opprette en ny Pokémon.");
+    }
+}
+
 
         // Hent fargen basert på typen til pokémonen
         function getColorByType(type) {
